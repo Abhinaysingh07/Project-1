@@ -125,7 +125,6 @@ btnAddToCart.forEach((button) => {
       matchingItem.quantity += 1;
     } else {
       cartItems.push({
-        uid: 17,
         dishName: dishName,
         quantity: 1,
         price: dishPrice,
@@ -146,12 +145,8 @@ btnAddToCart.forEach((button) => {
           return res.text();
         })
         .then((data) => {
-          if (data == "1") {
-            console.log("added");
-          } else if (data == "0") {
-            alert("hrr")
-            console.log("updated");
-          }
+          alert(data);
+
         })
         .catch((error) => {
           console.error(error);
