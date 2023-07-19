@@ -1,0 +1,119 @@
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+.head h7 {
+  font-size: 4rem;
+}
+.head .fa-times {
+  font-size: 2.5rem;
+}
+
+.head .fa-times {
+  font-size: 2.5rem;
+}
+
+.extra-btn {
+  display: flex;
+  color: rgb(105, 105, 105);
+  align-items: center;
+}
+.lines {
+  display: flex;
+  align-items: center;
+}
+.login_form .lines hr,
+.signup_form .lines hr {
+  border-bottom: 0.0001px solid rgba(0, 0, 0, 0.103);
+  width: 17rem;
+}
+.lines span {
+  font-size: 2.5rem;
+  color: #948080;
+}
+
+.login_form hr,
+.signup_form hr {
+  border-bottom: 0.0001px solid rgba(0, 0, 0, 0.103);
+  width: 40rem;
+}
+
+.loginConatiner,
+.signupContainer {
+  display: none;
+  position: fixed;
+  /* Position the signupContainer relative to the viewport */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(28, 28, 28, 0.85);
+  z-index: 9999;
+}
+.login_form,
+.signup_form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background-color: rgb(255, 255, 255);
+  padding: 1.5rem 2rem;
+  border-radius: 7px;
+  align-items: center;
+  width: 45rem;
+  margin: 10rem auto;
+  /* Center the overlay content vertically and horizontally */
+}
+
+.login_form button .fa-envelope,
+.fa-google {
+  margin: 0 2rem;
+}
+.login_form .lsbtn,
+.signup_form .lsbtn {
+  background-color: rgba(27, 167, 27, 0.836);
+  color: #fff;
+  font-size: 2rem;
+  border-radius: 7px;
+}
+.lsbtn:hover {
+  background-color: rgba(27, 167, 27, 0.959);
+}
+
+.signup-link {
+  font-size: 1.7rem;
+  font-weight: 400;
+}
+.login_form a,
+.signup_form a {
+  color: rgba(27, 167, 27, 0.911);
+}
+
+.login_form a:hover,
+.signup_form a:hover,
+.footer .box li a :hover,
+.footer .box li :hover {
+  text-decoration: underline;
+}
+
+
+.login_form input,
+.login_form button,
+.signup_form input,
+.signup_form button {
+  font-size: 2rem;
+  width: 40rem;
+  height: 5rem;
+  border: 1px solid rgba(0, 0, 0, 0.281);
+  padding: 1rem;
+  border-radius: 7px;
+  background: #fff;
+}
+
+.signupContainer .lfooter p {
+  font-size: 1.3rem;
+  line-height: 1.6rem;
+  color: rgb(116, 110, 110);
+}

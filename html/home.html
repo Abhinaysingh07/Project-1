@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sWagg pizza</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" />
+  <link rel="stylesheet" href="/swag_orig/css/home.css" />
+  <link rel="stylesheet" href="/swag_orig/css/login.css">
+</head>
+
+<body>
+  <!-- header section Starts here -->
+
+  <header class="header">
+    <a href="#"  class="logo"> <i class="fas fa-utensils"></i>Swagg pizza</a>
+    <nav id="navbar" class="navbar">
+      <ul class="nav_list">
+        <li class="nav_title"><a href="#">Home</a></li>
+        <li class="nav_title"><a href="#dish_container">Menu</a></li>
+        <li class="nav_title"><a href="#special_dish">Offers</a></li>
+        <li class="nav_title"><a href="#order">Order Now</a></li>
+      </ul>
+    </nav>
+    <div class="icons">
+      <i class="fas fa-bars" id="bars"></i>
+      <i class="fas fa-search" id="srch"></i>
+      <a class="fas fa-heart"></a>
+      <a class="fas fa-shopping-cart" href="/swag_orig/js/cartUpload.php" target="_blank"></a>
+    </div>
+  </header>
+
+  <!-- Search Section starts here -->
+
+  <form action="" id="search-form">
+    <input type="text" name="" placeholder="Search here..." id="search-box" />
+    <label for="search-box" class="fas fa-search"></label>
+    <i class="fas fa-times" id="close"></i>
+  </form>
+
+  <!-- slider section starts here -->
+
+  <section class="swiper container">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide item" id="item1">
+        <div class="text">
+          <h3>Our Special Dish</h3>
+          <h1>Spicy Noodles</h1>
+          <p>
+            Spice up your taste buds with fiery noodle delight!
+            Available at reasonable price..
+          </p>
+          <button class="btn lbtn">Login</button>
+        </div>
+        <div class="food_pic">
+          <img src="/swag_orig/img/rq3.png" alt="" />
+        </div>
+      </div>
+
+      <div class="swiper-slide item" id="item2">
+        <div class="text">
+          <h3>Our Special Dish</h3>
+          <h1>Fried Chicken</h1>
+          <p>
+            Add a Little Crunch to Your Day: Dive into Our Mouthwatering Fried Chicken Feast.
+            Available at reasonable price..
+          </p>
+          <button class="btn lbtn">Login</button>
+        </div>
+        <div class="food_pic">
+          <img src="/swag_orig/img/rq1.png" alt="" />
+        </div>
+      </div>
+
+      <div class="swiper-slide item" id="item3">
+        <div class="text">
+          <h3>Our Special Dish</h3>
+          <h1>pizza</h1>
+          <p>
+            Slice into Happiness: Delight in Every Bite of Our Perfect Pizza
+            Available at reasonable price..
+          </p>
+          <button class="btn lbtn">Login</button>
+        </div>
+        <div class="food_pic">
+          <img src="/swag_orig/img/rq2.png" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <div class="swiper-pagination"></div>
+  </section>
+
+
+  <!-- login section starts here -->
+
+  <div class="loginConatiner" id="loginConatiner">
+    <form action="" class="login_form" id="login_form">
+      <div class="head">
+        <h7>Login</h7><i class="fas fa-times close"></i>
+      </div>
+
+      <input type="text" placeholder="Phone" id="phone" required pattern="[0-9]{10}">
+      <button type="submit" class="login-btn lsbtn">Send One Time Password</button>
+
+      <div class="lines">
+        <hr><span>or</span>
+        <hr>
+      </div>
+
+      <button type="button" class="extra-btn"><i class="fa-regular fa-envelope"></i>Continue with
+        Email</button>
+      <button type="button" class="extra-btn"><i class="fa-brands fa-google"></i>
+        Continue with Google</button>
+      <hr>
+
+      <p class="signup-link">New To SwagPizza ? <a href="#overlay" class="signup-link"> Create new
+          account</a></p>
+
+    </form>
+  </div>
+  <div id="signupContainer" class="signupContainer">
+
+    <form action="" class="signup_form" id="signup_form">
+      <div class="head">
+        <h7>Signup</h7><i class="fas fa-times close"></i>
+      </div>
+      <input type="text" placeholder="Full Name" id="s_username" required>
+      <input type="text" placeholder="phone no" id="pno" required pattern="[0-9]{10}">
+      <footer class="lfooter">
+        <p>By clicking Sign Up, you agree to our <a href="">Terms</a>, <a href="">Privacy
+            Policy</a>,
+          and
+          <a href="">Cookies Policy.</a> You may receive SMS notifications from us and can opt out at
+          any
+          time.
+        </p>
+        <button class="btn lsbtn">Create an account</button>
+      </footer>
+      <div class="lines">
+        <hr><span>or</span>
+        <hr>
+      </div>
+      <button type="button" class="extra-btn"><i class="fa-brands fa-google"></i>
+        Continue with Google</button>
+      <p class="signup-link">Already Have An Account ? <a href="#lform_container" class="signup-link"> Login</a></p>
+    </form>
+  </div>
+
+
+  <!-- dishes Section starts here  -->
+
+  <section class="dish_container" id="dish_container">
+    <h2 class="sub-heading1">Our Dishes</h2>
+    <h1 class="sub-heading2">Popular Dishes</h1>
+    <div class="eyes"> <i class="fas fa-times" id="closed"></i>
+      <img src="/swag_orig/img/burgerzoom.jpg" id="eye1">
+    </div>
+    <div class="dishes"></div>
+      
+  </section>
+
+
+  <!-- about section starts here -->
+
+  <section class="about" id="about">
+    <h3 class="sub-heading1">About Us</h3>
+    <h2 class="sub-heading2">WHY CHOOSE US?</h2>
+    <div class="sub_about">
+      <div class="image"><img src="/swag_orig/img/abtimg.png" alt="" /></div>
+      <div class="text">
+        <h2>Best Food In The Country</h2>
+        <p> Right at your doorstep. Satisfaction guaranteed, one bite at a time.!<br>
+          We take pride in sourcing the highest quality ingredients and collaborating with the country's most talented
+          chefs to ensure that you enjoy unparalleled gastronomic delights from the comfort of your own home.
+        </p>
+        <div class="icons-container">
+          <div class="icons">
+            <i class="fas fa-shipping-fast"></i>
+            <span class="btn">Free Delivery</span>
+          </div>
+          <div class="icons">
+            <i class="fas fa-dollar-sign"></i>
+            <span class="btn">Easy Payments</span>
+          </div>
+          <div class="icons">
+            <i class="fas fa-headset"></i>
+            <span class="btn">24/7 Services</span>
+          </div>
+        </div>
+        <button>Learn More</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- menu section starts here -->
+
+  <section class="special_dish" id="special_dish">
+    <h3 class="sub-heading1">
+      Weekly
+      <span class="sub-heading2">offer</span>
+    </h3>
+
+    <div class="boxes"></div>
+  </section>
+
+  <!-- review section starts here -->
+
+  <section class="review" id="review">
+    <h3 class="sub-heading1">Customer's Review</h3>
+    <h1 class="sub-heading2">WHAT THEY SAY</h1>
+    <div class="swiper sliding">
+      <div class="swiper-wrapper review_boxes">
+        <div class="swiper-slide box">
+          <div class="identity">
+            <img src="/swag_orig/img/p11.jpg" alt="" />
+            <div class="name">
+              <span>Abhinay</span>
+              <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+            </div>
+            <i class="fas fa-quote-right"></i>
+          </div>
+          <p>
+            The Margherita pizza was pure perfection. The thin crust had a
+            nice crunch, the tomato sauce was flavorful, and the melted
+            mozzarella was divine. I couldn't ask for a better pizza!
+          </p>
+        </div>
+        <div class="swiper-slide box">
+          <div class="identity">
+            <img src="/swag_orig/img/p2.jpg" alt="" />
+            <div class="name">
+              <span>Aanchal</span>
+              <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+            </div>
+            <i class="fas fa-quote-right"></i>
+          </div>
+          <p>
+            I couldn't get enough of the roasted fries. They had the perfect
+            balance of crispiness and softness, and the seasoning elevated the
+            flavor to a whole new level. A must-try!
+          </p>
+        </div>
+        <div class="swiper-slide box">
+          <div class="identity">
+            <img src="/swag_orig/img/p3.jpg" alt="" />
+            <div class="name">
+              <span>Ankit singh</span>
+              <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+            </div>
+            <i class="fas fa-quote-right"></i>
+          </div>
+          <p>
+            I fell in love with paella after trying it for the first time. The
+            blend of flavors, from the aromatic saffron to the tender meats
+            and vegetables, and comforting dish. A
+            must-try for any food lover!
+          </p>
+        </div>
+        <div class="swiper-slide box">
+          <div class="identity">
+            <img src="/swag_orig/img/p4.jpg" alt="" />
+            <div class="name">
+              <span>Prachi</span>
+              <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+            </div>
+            <i class="fas fa-quote-right"></i>
+          </div>
+          <p>
+            I fell in love with paella after trying it for the first time. The
+            blend of flavors, from the aromatic saffron to the tender meats
+            and vegetables, created a truly satisfying and comforting dish. A
+            must-try for any food lover!.
+          </p>
+        </div>
+        <div class="swiper-slide box">
+          <div class="identity">
+            <img src="/swag_orig/img/p13.jpg" alt="" />
+            <div class="name">
+              <span>Shweta</span>
+              <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+            </div>
+            <i class="fas fa-quote-right"></i>
+          </div>
+          <p>
+            The chocolate burger was a unique and delightful experience. The
+            combination of the rich chocolate-infused beef patty with melted
+            cheese created a surprisingly delicious blend of sweet and savory
+            flavors. It's a must-try for adventurous food lovers!
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- order section starts here -->
+
+  <section class="order" id="order">
+    <h3 class="sub-heading1">Order Now</h3>
+    <h1 class="sub-heading2">FREE AND FAST</h1>
+    <!-- <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST"> -->
+    <form action="order.php" method="POST">
+      <div class="inputbox">
+        <div class="input">
+          <span> Your Name </span>
+          <input type="text" placeholder="Enter your name" name="uname" required />
+        </div>
+        <div class="input">
+          <span>Your Number</span>
+          <input type="number" placeholder="Enter your number" name="num" required />
+        </div>
+        <div class="input">
+          <span>Your Order</span>
+          <input type="text" placeholder="Enter your order" name="orderName" required />
+        </div>
+        <div class="input">
+          <span>How much order</span>
+          <input type="text" placeholder="Enter number of order" name="qty" required />
+        </div>
+        <div class="input">
+          <span>Anything extra</span>
+          <input type="text" placeholder=" Extra With Food" name="extraItems" />
+        </div>
+        <div class="input">
+          <span>Date And Time</span>
+          <input type="datetime-local" placeholder="enter date and time" name="dateTime" />
+        </div>
+      </div>
+      <div class="inputbox">
+        <div class="input">
+          <span>Your Address</span>
+          <textarea class="address" name="address" rows="6" cols="50" required>
+Enter your address</textarea>
+        </div>
+        <div class="input">
+          <span>Your message</span>
+          <textarea class="message" name="message" rows="6" cols="50" name="feedback">
+Enter your message</textarea>
+        </div>
+      </div>
+      <center><input type="submit" class="btn" value="order now" /></center>
+    </form>
+
+  </section>
+
+
+  <!-- Footer section  starts here -->
+
+  <footer class="footer">
+    <center>
+      <div class="boxes">
+        <div class="box">
+          <h2 class="sub-heading2">Location</h2>
+
+          <ul>
+            <li>India</li>
+            <li>Russia</li>
+            <li>Japan</li>
+            <li>China</li>
+            <li>Nepal</li>
+          </ul>
+        </div>
+        <div class="box">
+          <h2 class="sub-heading2">Quick Links</h2>
+
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#dish_container">Dishes</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#special_dish">Menu</a></li>
+            <li><a href="#review">Review</a></li>
+            <li><a href="#order">Order</a></li>
+          </ul>
+        </div>
+        <div class="box">
+          <h2 class="sub-heading2">Contact Info</h2>
+
+          <ul>
+            <li>+919675730204</li>
+            <li>+916398356210</li>
+            <li>abhinaybisht07@gmail.com</li>
+            <li>ShimlaBypass rd,Dehradun</li>
+          </ul>
+        </div>
+        <div class="box">
+          <h2 class="sub-heading2">Follow Us</h2>
+
+          <ul>
+            <li><a href="">Facebook</a></li>
+            <li><a href="">Twitter</a></li>
+            <li><a href="">Instagram</a></li>
+            <li><a href="">Linkdin</a></li>
+          </ul>
+        </div>
+      </div>
+    </center>
+    <div class="credit">
+      Copyright @ 2023 By <span>Swagg pizza.</span>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+  <script src="/swag_orig/js/slider.js"></script>
+  <script src="/swag_orig/data/data.js"></script>
+  <script src="/swag_orig/js/swag.js"></script>
+  <script src="/swag_orig/js/login.js"></script>
+
+
+</body>
+
+</html>
