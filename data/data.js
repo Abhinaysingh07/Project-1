@@ -1,4 +1,4 @@
-let dishList = [{
+export let dishList = [{
     image: "/swag_orig/img/dish1.png",
     name: "Chicago Pizza",
     rating: "fas fa-heart",
@@ -32,7 +32,7 @@ let dishList = [{
 }
 ];
 
-let todaySpecialList = [{
+export let todaySpecialList = [{
     image: "/swag_orig/img/sp1.jpg",
     name: "Chicago Pizza",
     rating: "fas fa-heart",

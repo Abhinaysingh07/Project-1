@@ -1,3 +1,5 @@
+import { dishList, todaySpecialList } from "../data/data.js";
+
 // Perform any cleanup or execute specific actions here
 
 window.addEventListener("beforeunload", function () {
@@ -23,23 +25,103 @@ bars.addEventListener("click", () => {
 const srch = document.getElementById("srch");
 const search_form = document.getElementById("search-form");
 const close = document.getElementById("close");
+const searchBtn = document.getElementById("search-btn");
+const searchResult = document.getElementsByClassName("search-result")[0];
+
 srch.addEventListener("click", () => {
   search_form.classList.toggle("search_toggle");
+  document.documentElement.style.overflow = "hidden"; // Disable scrolling on html element
 });
 close.addEventListener("click", () => {
+  searchResult.innerHTML = "";
   search_form.classList.toggle("search_toggle");
+  document.documentElement.style.overflow = "auto"; // Disable scrolling on html element
 });
+// searchBtn.addEventListener("click", () => {
+//   const searchBoxValue = document.getElementById("search-box").value;
+//   const searchResult = document.getElementsByClassName("search-result")[0];
+
+//   dishList.forEach((dish) => {
+//     let dishName = dish.name;
+//     let res = dishName.includes(searchBoxValue);
+
+const searchBox = document.getElementById("search-box");
+searchBox.addEventListener("input", () => {
+  const searchBoxValue = searchBox.value.toLowerCase();
+  let html = '';
+
+  dishList.forEach((dish) => {
+    let dishName = dish.name.toLowerCase();
+    if (dishName.includes(searchBoxValue)) {
+      html +=
+        `<a href="#${dish.id}" class="dishess">
+          <div class="img"><img src="${dish.image}" alt=""></div>
+          <div class="desc">
+            <div class="name">${dish.name}</div>
+            <div class="innerdesc">
+              <div class="price">${dish.price}RS</div>
+              <div class="rating"><p>3.5</p></div>
+            </div>
+          </div>
+        </a>`;
+    }
+  });
+
+  todaySpecialList.forEach((dish) => {
+    let dishName = dish.name.toLowerCase();
+    if (dishName.includes(searchBoxValue)) {
+      html +=
+        `<a href="#${dish.id}" class="dishess">
+          <div class="img"><img src="${dish.image}" alt=""></div>
+          <div class="desc">
+            <div class="name">${dish.name}</div>
+            <div class="innerdesc">
+              <div class="price">${dish.price}RS</div>
+              <div class="rating"><p>3.5</p></div>
+            </div>
+          </div>
+        </a>`;
+    }
+  });
+
+  searchResult.innerHTML = html;
+
+  let a = document.querySelectorAll(".dishess");
+  a.forEach((dish) => {
+    dish.addEventListener("click", () => {
+      searchResult.innerHTML = "";
+      document.documentElement.style.overflow = "auto"; // Disable scrolling on html element
+      search_form.classList.toggle("search_toggle");
+    });
+  });
+});
+
 
 // start of generating html for  dishes Section dynamically
 
-html = "";
+
+function eyee() {
+  let eye = document.getElementsByClassName("eyes")[0];
+  eye.style.display = "flex";
+  let eye1 = document.getElementById("eye1");
+  eye1.style.display = "block";
+
+  const cl = document.getElementById("closed");
+  cl.addEventListener("click", () => {
+    let eye = document.getElementsByClassName("eyes")[0];
+    eye.style.display = "none";
+  });
+}
+
+
+let html = "";
 dishList.forEach((dish) => {
   html += `
-  <div class="dish">
+  <div class="dish" id="${dish.id}">
     <div class="desc1">
       <i class="fas fa-heart"></i>
       <i class="fas fa-eye"  onclick="eyee()"></i>
-      <div class="imgbox">  <img src="${dish.image}" alt="" />      </div>
+      <div class="imgbox">  <img loading="lazy" src="${dish.image}" alt="" />      </div>
       <h3 class = "item-title dish_Name">${dish.name}</h3>
       <div class="stars">
         <i class="fas fa-star"></i>
@@ -68,12 +150,12 @@ dishes.innerHTML = html;
 
 // start of generating html for  dishes Section dynamically
 
-html2 = "";
+let html2 = "";
 todaySpecialList.forEach((dish) => {
   html2 += `
-        <div class="box">
+        <div class="box" id="${dish.id}">
           <div class="specaial_dish_image">
-            <img class="image" src="${dish.image}" alt="" />
+            <img loading="lazy" class="image" src="${dish.image}" alt="" />
             <a href="" class="fas fa-heart"></a>
           </div>
           <div class="stars">
@@ -107,66 +189,35 @@ boxes.innerHTML = html2;
 
 // starting adding dishes to cartItems array on click of addToCart button
 
-let cartItems = [];
-
 let btnAddToCart = document.querySelectorAll(".add-to-cart-btn");
 btnAddToCart.forEach((button) => {
   button.addEventListener("click", () => {
     let dishName = button.dataset.dishName;
     let dishPrice = button.dataset.dishPrice;
     let dishImage = button.dataset.dishImage;
-    let matchingItem = 0;
-    cartItems.forEach((item) => {
-      if (dishName === item.dishName) {
-        matchingItem = item;
-      }
-    });
-    if (matchingItem) {
-      matchingItem.quantity += 1;
-    } else {
-      cartItems.push({
-        dishName: dishName,
-        quantity: 1,
-        price: dishPrice,
-        image: dishImage,
-      });
-    }
-    function uploadCartToDatabase() {
-      const requestBody = JSON.stringify(cartItems);
-
-      fetch("/swag_orig/js/cartUpload.php", {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json", // fixed the header name to "Content-Type"
-        },
-        body: requestBody, // pass the JSON string as the request body
+    let cartItems = {
+      dishName: dishName,
+      quantity: 1,
+      price: dishPrice,
+      image: dishImage,
+    };
+    const requestBody = JSON.stringify(cartItems);
+    fetch("http://localhost:5500/saveCartData", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: requestBody,
+    })
+      .then((res) => {
+        return res.text();
       })
-        .then((res) => {
-          return res.text();
-        })
-        .then((data) => {
-          alert(data);
-
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } uploadCartToDatabase();
-
-
-    // localStorage.setItem('myCartKey', JSON.stringify(cartItems));
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   });
 });
 
-function eyee() {
-  let eye = document.getElementsByClassName("eyes")[0];
-  eye.style.display = "flex";
-  let eye1 = document.getElementById("eye1");
-  eye1.style.display = "block";
-
-  const cl = document.getElementById("closed");
-  cl.addEventListener("click", () => {
-    let eye = document.getElementsByClassName("eyes")[0];
-    eye.style.display = "none";
-  });
-}
