@@ -3,9 +3,8 @@ const mysql = require('mysql');
 const app = express();
 const port = 5500;
 const cors = require('cors'); // Import the cors package
-
-// Enable CORS for all routes
 app.use(cors());
+const bcrypt = require('bcrypt');
 
 // Middleware to parse incoming request bodies
 
@@ -16,7 +15,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
+
 // MySQL
+
 const pool = mysql.createPool({
     connectionLimit: 10,
     host: 'localhost',
@@ -24,6 +25,64 @@ const pool = mysql.createPool({
     password: '',
     database: 'swagpizzacart'
 })
+
+app.post('/signup', (req, res) => {
+    const { s_username, pno, password } = req.body;
+
+    // Check if the phone number is already registered
+    pool.query('SELECT * FROM userss WHERE phone = ?', [pno], (phoneCheckErr, phoneCheckResults) => {
+        if (phoneCheckErr) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+
+        if (phoneCheckResults.length > 0) {
+            return res.status(400).json({ message: 'Phone number already registered' });
+        }
+
+        // Phone number is not registered, proceed with registration
+        const hashedPassword = bcrypt.hashSync(password, 10); // Using sync version for simplicity
+
+        pool.query('INSERT INTO userss (username, phone, password) VALUES (?, ?, ?)', [s_username, pno, hashedPassword], (insertErr, result) => {
+            if (insertErr) {
+                return res.status(500).json({ error: 'Server error' });
+            }
+
+            if (result.affectedRows > 0) {
+                return res.json({ message: 'User registered successfully' });
+            } else {
+                return res.status(500).json({ error: 'Server error' });
+            }
+        });
+    });
+});
+
+app.post('/login', (req, res) => {
+    const { phone, password } = req.body;
+
+    // Retrieve user information based on the provided phone number
+
+    pool.query('SELECT * FROM userss WHERE phone = ?', [phone], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Server error' });
+        }
+
+        if (results.length === 0) {
+            return res.status(401).json({ message: 'This Number is not registered' });
+        }
+
+        const user = results[0];
+        const isPasswordValid = bcrypt.compareSync(password, user.password); // Using sync version for simplicity
+
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: 'Password incorrect' });
+        }
+
+        // Successful login - you can generate a token here if needed
+
+        return res.json({ message: 'Login successful' });
+    });
+});
 
 
 // add data
@@ -105,6 +164,7 @@ app.delete('/deleteCartData', (req, res) => {
 });
 
 // [req.params.id]
+
 app.put("/updateQuantity", (req, res) => {
     const { dishName, quantityChange } = req.body;
     const updatedQuantity = parseInt(quantityChange);
@@ -125,4 +185,5 @@ app.put("/updateQuantity", (req, res) => {
 
 
 // Listen on enviroment port or 3000
+
 app.listen(port, () => console.log(`Listening on port ${port}`))

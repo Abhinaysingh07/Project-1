@@ -26,64 +26,64 @@ loginLink.addEventListener("click", () => {
 
 // login and signup fetching data script
 
-const loginForm = document.getElementById("login_form");
+// const loginForm = document.getElementById("login_form");
 
-loginForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+// loginForm.addEventListener("submit", (e) => {
+//     e.preventDefault();
 
-    const lpno = document.getElementById("phone").value;
+//     const lpno = document.getElementById("phone").value;
 
-    const obj = {
-        "lpno": lpno
-    };
+//     const obj = {
+//         "lpno": lpno
+//     };
 
-    fetch("/swag_orig/js/login.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json;"
-        },
-        body: JSON.stringify(obj)
-    })
-        .then((res) => {
-            return res.text()
-        })
-        .then((data) => {
-            if (data == 0) {
-                alert("This number is not registered with us");
-                document.getElementById("pno").value = lpno;
-                signupContainer.style.display = "block";
+//     fetch("/swag_orig/js/login.php", {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json;"
+//         },
+//         body: JSON.stringify(obj)
+//     })
+//         .then((res) => {
+//             return res.text()
+//         })
+//         .then((data) => {
+//             if (data == 0) {
+//                 alert("This number is not registered with us");
+//                 document.getElementById("pno").value = lpno;
+//                 signupContainer.style.display = "block";
 
-            }
-            else if (data == 1) alert("OTP SENT");
-            loginConatiner.style.display = "none";
-        })
-        .catch((err) => { console.log(err) });
-});
+//             }
+//             else if (data == 1) alert("OTP SENT");
+//             loginConatiner.style.display = "none";
+//         })
+//         .catch((err) => { console.log(err) });
+// });
 
-const signupForm = document.getElementById("signup_form");
+// const signupForm = document.getElementById("signup_form");
 
-signupForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+// signupForm.addEventListener("submit", (e) => {
+//     e.preventDefault();
 
-    const s_username = document.getElementById("s_username").value;
-    const pno = document.getElementById("pno").value;
+//     const s_username = document.getElementById("s_username").value;
+//     const pno = document.getElementById("pno").value;
 
-    const obj = {
-        "s_username": s_username,
-        "pno": pno
-    };
+//     const obj = {
+//         "s_username": s_username,
+//         "pno": pno
+//     };
 
-    fetch("/swag_orig/js/signup.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json; "
-        },
-        body: JSON.stringify(obj)
-    })
-        .then((res) => {
-            console.log(res);
-            return res.text()
-        })
-        .then((data) => { console.log(data); })
-        .catch((err) => { console.log(err) });
-});
+//     fetch("/swag_orig/js/signup.php", {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json; "
+//         },
+//         body: JSON.stringify(obj)
+//     })
+//         .then((res) => {
+//             console.log(res);
+//             return res.text()
+//         })
+//         .then((data) => { console.log(data); })
+//         .catch((err) => { console.log(err) });
+// });

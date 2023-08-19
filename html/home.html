@@ -122,13 +122,17 @@
   <!-- login section starts here -->
 
   <div class="loginConatiner" id="loginConatiner">
-    <form action="" class="login_form" id="login_form">
+    <form action="http://localhost:5500/login" method="post" class="login_form" id="login_form">
       <div class="head">
         <h7>Login</h7><i class="fas fa-times close"></i>
       </div>
 
-      <input type="text" placeholder="Phone" id="phone" required pattern="[0-9]{10}">
-      <button type="submit" class="login-btn lsbtn">Send One Time Password</button>
+      <input type="text" placeholder="Phone" id="phone" name="phone" pattern="[0-9]{10}">
+      <!-- Inside the login_form form -->
+      <input type="password" placeholder="Password" id="pass" name="password" required>
+      <button type="submit" class="login-btn lsbtn">Login</button>
+
+      <!-- <button type="submit" class="login-btn lsbtn">Send One Time Password</button> -->
 
       <div class="lines">
         <hr><span>or</span>
@@ -148,12 +152,13 @@
   </div>
   <div id="signupContainer" class="signupContainer">
 
-    <form action="" class="signup_form" id="signup_form">
+    <form action="http://localhost:5500/signup" method="post" class="signup_form" id="signup_form">
       <div class="head">
         <h7>Signup</h7><i class="fas fa-times close"></i>
       </div>
-      <input type="text" placeholder="Full Name" id="s_username" required>
-      <input type="text" placeholder="phone no" id="pno" required pattern="[0-9]{10}">
+      <input type="text" placeholder="Full Name" id="s_username" name="s_username" required>
+      <input type="text" placeholder="Phone Number" id="pno" name="pno" required pattern="[0-9]{10}">
+      <input type="password" placeholder="Password" id="password" name="password" required>
       <footer class="lfooter">
         <p>By clicking Sign Up, you agree to our <a href="">Terms</a>, <a href="">Privacy
             Policy</a>,

@@ -10,7 +10,12 @@
   "author": "abhinay",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
-    "express": "^4.18.2"
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "fast-two-sms": "^3.0.0",
+    "mysql": "^2.18.1"
   }
 }
