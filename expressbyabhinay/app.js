@@ -5,6 +5,7 @@ const port = 5500;
 const cors = require('cors'); // Import the cors package
 app.use(cors());
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken'); // Import the JWT library
 
 // Middleware to parse incoming request bodies
 
@@ -56,6 +57,8 @@ app.post('/signup', (req, res) => {
     });
 });
 
+
+
 app.post('/login', (req, res) => {
     const { phone, password } = req.body;
 
@@ -72,15 +75,17 @@ app.post('/login', (req, res) => {
         }
 
         const user = results[0];
-        const isPasswordValid = bcrypt.compareSync(password, user.password); // Using sync version for simplicity
+        const isPasswordValid = bcrypt.compareSync(password, user.password);
 
         if (!isPasswordValid) {
             return res.status(401).json({ message: 'Password incorrect' });
         }
 
-        // Successful login - you can generate a token here if needed
+        // If the password is correct, generate a JWT token
+        const token = jwt.sign({ userId: user.id }, 'your-secret-key', { expiresIn: '1h' });
 
-        return res.json({ message: 'Login successful' });
+        // Send the token back to the client
+        return res.json({ message: 'Login successful', token });
     });
 });
 

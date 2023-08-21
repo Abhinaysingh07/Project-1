@@ -4,6 +4,7 @@ const cl = document.querySelectorAll(".signupContainer .close,.loginConatiner .c
 const signupLink = document.getElementsByClassName("signup-link")[1];
 const loginLink = document.getElementsByClassName("signup-link")[3];
 const loginBtns = document.querySelectorAll(".lbtn");
+const loginSubmitBtn = document.getElementsByClassName("login-btn")[0];
 cl.forEach((cl) => {
     cl.addEventListener("click", () => {
         signupContainer.style.display = "none";//dont know why but signupContainer and loginContainer running without declaring
@@ -23,6 +24,54 @@ loginLink.addEventListener("click", () => {
     signupContainer.style.display = "none";
     loginConatiner.style.display = "block";
 });
+
+
+// login key
+
+function setJwtToken(token) {
+    document.getElementById('jwtToken').value = token;
+}
+
+loginSubmitBtn.addEventListener("click", () => {
+
+    const phone = document.getElementById('phone').value; // Get the phone value from the input
+    const password = document.getElementById('pass').value; // Get the password value from the input
+
+    const requestData = { phone, password }; // Create an object with the data
+
+    fetch('http://localhost:5500/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json' // Specify JSON content type
+        },
+        body: JSON.stringify(requestData) // Convert the data to JSON string
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    console.error('Error:', errorData.message);
+                });
+            }
+            return response.json();
+        })
+        .then(responseData => {
+            console.log( responseData.token);
+
+            const jwtToken = responseData.token;
+            setJwtToken(jwtToken);
+
+            // Perform further actions as needed
+        })
+        .catch(error => {
+            console.error('Request failed:', error);
+        });
+
+})
+
+
+
+
+
 
 // login and signup fetching data script
 

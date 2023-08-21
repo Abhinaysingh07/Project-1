@@ -122,7 +122,8 @@
   <!-- login section starts here -->
 
   <div class="loginConatiner" id="loginConatiner">
-    <form action="http://localhost:5500/login" method="post" class="login_form" id="login_form">
+    <form onsubmit="return false;" class="login_form" id="login_form">
+
       <div class="head">
         <h7>Login</h7><i class="fas fa-times close"></i>
       </div>
@@ -130,7 +131,7 @@
       <input type="text" placeholder="Phone" id="phone" name="phone" pattern="[0-9]{10}">
       <!-- Inside the login_form form -->
       <input type="password" placeholder="Password" id="pass" name="password" required>
-      <button type="submit" class="login-btn lsbtn">Login</button>
+      <button type="button" class="login-btn lsbtn">Login</button>
 
       <!-- <button type="submit" class="login-btn lsbtn">Send One Time Password</button> -->
 
@@ -167,7 +168,7 @@
           any
           time.
         </p>
-        <button class="btn lsbtn">Create an account</button>
+        <button class="signup-btn lsbtn">Create an account</button>
       </footer>
       <div class="lines">
         <hr><span>or</span>
@@ -178,6 +179,8 @@
       <p class="signup-link">Already Have An Account ? <a href="#lform_container" class="signup-link"> Login</a></p>
     </form>
   </div>
+  <!-- Add a hidden input field to store the JWT token -->
+  <input type="hidden" id="jwtToken" name="jwtToken">
 
 
   <!-- dishes Section starts here  -->

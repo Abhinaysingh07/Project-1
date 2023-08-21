@@ -1,11 +1,5 @@
 import { dishList, todaySpecialList } from "../data/data.js";
 
-// Perform any cleanup or execute specific actions here
-
-window.addEventListener("beforeunload", function () {
-  localStorage.clear();
-});
-
 // making search and nav toggle bar script
 
 const bars = document.getElementById("bars");
@@ -95,6 +89,9 @@ searchBox.addEventListener("input", () => {
     });
   });
 });
+
+
+
 
 
 // start of generating html for  dishes Section dynamically
