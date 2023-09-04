@@ -1,0 +1,1 @@
+jwt token stored in local storage and local storage is being used to send jwt token to each network request like saveToCartData , updateCart , getCartdata ,  delete.

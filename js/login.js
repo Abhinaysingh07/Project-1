@@ -26,25 +26,17 @@ loginLink.addEventListener("click", () => {
 });
 
 
-// login key
-
-function setJwtToken(token) {
-    document.getElementById('jwtToken').value = token;
-}
-
 loginSubmitBtn.addEventListener("click", () => {
-
-    const phone = document.getElementById('phone').value; // Get the phone value from the input
-    const password = document.getElementById('pass').value; // Get the password value from the input
-
-    const requestData = { phone, password }; // Create an object with the data
+    const phone = document.getElementById('phone').value;
+    const password = document.getElementById('pass').value;
+    const requestData = { phone, password };
 
     fetch('http://localhost:5500/login', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json' // Specify JSON content type
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify(requestData) // Convert the data to JSON string
+        body: JSON.stringify(requestData)
     })
         .then(response => {
             if (!response.ok) {
@@ -55,84 +47,14 @@ loginSubmitBtn.addEventListener("click", () => {
             return response.json();
         })
         .then(responseData => {
-            console.log( responseData.token);
+            console.log(responseData.token);
 
             const jwtToken = responseData.token;
-            setJwtToken(jwtToken);
 
-            // Perform further actions as needed
+            // Set the JWT token value in local storage
+            localStorage.setItem('jwtToken', jwtToken);
         })
         .catch(error => {
             console.error('Request failed:', error);
         });
-
-})
-
-
-
-
-
-
-// login and signup fetching data script
-
-// const loginForm = document.getElementById("login_form");
-
-// loginForm.addEventListener("submit", (e) => {
-//     e.preventDefault();
-
-//     const lpno = document.getElementById("phone").value;
-
-//     const obj = {
-//         "lpno": lpno
-//     };
-
-//     fetch("/swag_orig/js/login.php", {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json;"
-//         },
-//         body: JSON.stringify(obj)
-//     })
-//         .then((res) => {
-//             return res.text()
-//         })
-//         .then((data) => {
-//             if (data == 0) {
-//                 alert("This number is not registered with us");
-//                 document.getElementById("pno").value = lpno;
-//                 signupContainer.style.display = "block";
-
-//             }
-//             else if (data == 1) alert("OTP SENT");
-//             loginConatiner.style.display = "none";
-//         })
-//         .catch((err) => { console.log(err) });
-// });
-
-// const signupForm = document.getElementById("signup_form");
-
-// signupForm.addEventListener("submit", (e) => {
-//     e.preventDefault();
-
-//     const s_username = document.getElementById("s_username").value;
-//     const pno = document.getElementById("pno").value;
-
-//     const obj = {
-//         "s_username": s_username,
-//         "pno": pno
-//     };
-
-//     fetch("/swag_orig/js/signup.php", {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json; "
-//         },
-//         body: JSON.stringify(obj)
-//     })
-//         .then((res) => {
-//             console.log(res);
-//             return res.text()
-//         })
-//         .then((data) => { console.log(data); })
-//         .catch((err) => { console.log(err) });
-// });
+});

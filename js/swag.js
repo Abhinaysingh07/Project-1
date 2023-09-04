@@ -184,9 +184,16 @@ todaySpecialList.forEach((dish) => {
 const boxes = document.querySelector(".boxes");
 boxes.innerHTML = html2;
 
-// starting adding dishes to cartItems array on click of addToCart button
+// Function to get cookie value by name
+function getCookie(name) {
+  const value = "; " + document.cookie;
+  const parts = value.split("; " + name + "=");
+  if (parts.length === 2) return parts.pop().split(";").shift();
+}
+// ... Your existing code ...
 
 let btnAddToCart = document.querySelectorAll(".add-to-cart-btn");
+
 btnAddToCart.forEach((button) => {
   button.addEventListener("click", () => {
     let dishName = button.dataset.dishName;
@@ -198,13 +205,17 @@ btnAddToCart.forEach((button) => {
       price: dishPrice,
       image: dishImage,
     };
-    const requestBody = JSON.stringify(cartItems);
-    fetch("http://localhost:5500/saveCartData", {
+
+    const token = localStorage.getItem('jwtToken'); // Retrieve token from local storage
+
+
+    fetch("http://localhost:5500/saveUserCartData", {
       method: "post",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": "Bearer " + token // Include the JWT token from the input field
       },
-      body: requestBody,
+      body: JSON.stringify({ cartItems }), // Use shorthand for object property
     })
       .then((res) => {
         return res.text();
@@ -217,4 +228,3 @@ btnAddToCart.forEach((button) => {
       });
   });
 });
-

@@ -1,15 +1,14 @@
 const express = require('express');
 const mysql = require('mysql');
+const cookieParser = require('cookie-parser'); // Import the cookie-parser package
 const app = express();
 const port = 5500;
 const cors = require('cors'); // Import the cors package
 app.use(cors());
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // Import the JWT library
-
-// Middleware to parse incoming request bodies
-
-app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser()); // Use the cookie-parser middleware
+app.use(express.urlencoded({ extended: true }));// Middleware to parse incoming request bodies
 
 // Parse application/json
 
@@ -57,8 +56,6 @@ app.post('/signup', (req, res) => {
     });
 });
 
-
-
 app.post('/login', (req, res) => {
     const { phone, password } = req.body;
 
@@ -90,37 +87,66 @@ app.post('/login', (req, res) => {
 });
 
 
-// add data
 
-app.post('/saveCartData', (req, res) => {
+// Middleware to verify JWT token
+
+function verifyToken(req, res, next) {
+    const token = req.headers.authorization; // Retrieve token from Authorization header
+
+    if (!token) {
+        return res.status(403).json({ message: 'Token missing' });
+    }
+
+    jwt.verify(token.replace('Bearer ', ''), 'your-secret-key', (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+        req.user = decoded; // Store the decoded user information in the request object
+        next();
+    });
+}
+
+
+app.post('/saveUserCartData', verifyToken, (req, res) => {
+    const userId = req.user.userId;
+    const { cartItems } = req.body;
+
+    // Add the user's ID to the cartItems object
+    cartItems.user_id = userId; // Use 'user_id' column name from the database table
+
     pool.getConnection((err, connection) => {
-        if (err) throw err;
-        const { dishName, quantity, price, image } = req.body;
+        if (err) {
+            console.error('Database connection error:', err);
+            throw err;
+        }
 
-        // Check if the dishName already exists in the cart
-        connection.query('SELECT * FROM cart WHERE dishName = ?', [dishName], (err, rows) => {
+        // Check if the dishName already exists in the cart for the user
+        connection.query('SELECT * FROM cart WHERE dishName = ? AND user_id = ?', [cartItems.dishName, userId], (err, rows) => {
             if (err) {
                 connection.release();
+                console.error('Select query error:', err);
                 return res.status(500).json({ error: 'Database error' });
             }
 
             if (rows.length > 0) {
-                // If the dishName exists, update the quantity
-                const currentQuantity = rows[0].quantity; // Get the current quantity from the database
-                const updatedQuantity = currentQuantity + quantity; // Calculate the updated quantity
+                // If the dishName exists for the user, update the quantity
+                const currentQuantity = rows[0].quantity;
+                const updatedQuantity = currentQuantity + cartItems.quantity;
 
-                connection.query('UPDATE cart SET quantity = ? WHERE dishName = ?', [updatedQuantity, dishName], (err) => {
+                connection.query('UPDATE cart SET quantity = ? WHERE dishName = ? AND user_id = ?', [updatedQuantity, cartItems.dishName, userId], (err) => {
                     connection.release();
                     if (err) {
+                        console.error('Update query error:', err);
                         return res.status(500).json({ error: 'Update error' });
                     }
                     return res.json({ message: 'Quantity updated successfully' });
                 });
             } else {
-                // If the dishName does not exist, insert a new row in the cart table with the provided quantity, price, and image
-                connection.query('INSERT INTO cart (dishName, quantity, price, image) VALUES (?, ?, ?, ?)', [dishName, quantity, price, image], (err) => {
+                // If the dishName does not exist for the user, insert a new row in the cart table with the provided data
+                connection.query('INSERT INTO cart (user_id, dishName, quantity, price, image) VALUES (?, ?, ?, ?, ?)', [userId, cartItems.dishName, cartItems.quantity, cartItems.price, cartItems.image], (err) => {
                     connection.release();
                     if (err) {
+                        console.error('Insert query error:', err);
                         return res.status(500).json({ error: 'Insert error' });
                     }
                     return res.json({ message: 'Data inserted successfully' });
@@ -131,60 +157,68 @@ app.post('/saveCartData', (req, res) => {
 });
 
 
-// Get all beers
+// Example route that requires authentication and authorization
 
-app.get('/getCartData', (req, res) => {
-    pool.getConnection((err, connection) => {
-        if (err) throw err
-        console.log('connected as id ' + connection.threadId)
-        connection.query('SELECT * from cart', (err, rows) => {
-            connection.release() // return the connection to pool
+app.get('/getCartData', verifyToken, (req, res) => {
+    const userId = req.user.userId; // Extracted from the token verification middleware
 
-            if (!err) {
-                res.send(rows)
-            } else {
-                console.log(err)
-            }
+    // Fetch and return cart data specific to the user's ID
+    pool.query('SELECT * FROM cart WHERE user_id = ?', [userId], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
 
-        })
-    })
-})
+        res.send(rows);
+    });
+});
+
 
 // Delete a beer
 
-app.delete('/deleteCartData', (req, res) => {
+app.delete('/deleteCartData', verifyToken, (req, res) => {
     const removeItem = req.body.removeDish;
+
+    // Extract the user ID from the decoded JWT token
+    const userId = req.user.userId;
 
     pool.getConnection((err, connection) => {
         if (err) throw err;
-        connection.query('DELETE FROM cart WHERE dishName = ?', [removeItem], (err, rows) => {
-            connection.release(); // return the connection to pool
-            if (!err) {
-                res.send(`Cart with the name ${removeItem} has been removed.`);
-            } else {
+        connection.query('DELETE FROM cart WHERE dishName = ? AND user_id = ?', [removeItem, userId], (err, result) => {
+            connection.release(); // return the connection to the pool
+            if (err) {
                 console.log(err);
+                res.status(500).json({ success: false, message: 'Error deleting cart item.' });
+            } else {
+                res.status(200).json({ success: true, message: 'Cart item deleted successfully.' });
             }
         });
     });
 });
 
-// [req.params.id]
 
-app.put("/updateQuantity", (req, res) => {
+app.put("/updateQuantity", verifyToken, (req, res) => {
     const { dishName, quantityChange } = req.body;
     const updatedQuantity = parseInt(quantityChange);
+    const userId = req.user.userId; // Extracted from the token verification middleware
 
-    pool.getConnection((err, connection) => {
-        if (err) throw err;
-        connection.query('UPDATE cart SET quantity = ? WHERE dishName = ?', [updatedQuantity, dishName], (err, result) => {
+    // Check if the dishName exists for the specific user
+    pool.query('SELECT * FROM cart WHERE dishName = ? AND user_id = ?', [dishName, userId], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Database error' });
+        }
+
+        if (rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Dish not found in the user\'s cart' });
+        }
+
+        // Update the quantity for the specific dishName and user
+        pool.query('UPDATE cart SET quantity = ? WHERE dishName = ? AND user_id = ?', [updatedQuantity, dishName, userId], (err, result) => {
             if (err) {
-                res.status(500).json({ success: false, message: 'Error updating quantity.' });
-            } else {
-                res.status(200).json({ success: true, message: 'Quantity updated successfully.' });
+                return res.status(500).json({ success: false, message: 'Error updating quantity' });
             }
+            return res.status(200).json({ success: true, message: 'Quantity updated successfully' });
         });
     });
-
 });
 
 
