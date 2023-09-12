@@ -34,7 +34,7 @@ loginSubmitBtn.addEventListener("click", () => {
     fetch('http://localhost:5500/login', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestData)
     })
@@ -44,15 +44,16 @@ loginSubmitBtn.addEventListener("click", () => {
                     console.error('Error:', errorData.message);
                 });
             }
+            // If the response is successful, parse the JSON response to get the JWT token
             return response.json();
         })
         .then(responseData => {
-            console.log(responseData.token);
-
+            // Now, you can access the JWT token in the responseData
             const jwtToken = responseData.token;
+            console.log(responseData.message);
+            document.cookie = `jwtToken=${jwtToken}; expires=Sun, 31 Dec 2023 23:59:59 GMT; path=/`;
 
-            // Set the JWT token value in local storage
-            localStorage.setItem('jwtToken', jwtToken);
+    
         })
         .catch(error => {
             console.error('Request failed:', error);

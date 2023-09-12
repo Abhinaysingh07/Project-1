@@ -31,13 +31,6 @@ close.addEventListener("click", () => {
   search_form.classList.toggle("search_toggle");
   document.documentElement.style.overflow = "auto"; // Disable scrolling on html element
 });
-// searchBtn.addEventListener("click", () => {
-//   const searchBoxValue = document.getElementById("search-box").value;
-//   const searchResult = document.getElementsByClassName("search-result")[0];
-
-//   dishList.forEach((dish) => {
-//     let dishName = dish.name;
-//     let res = dishName.includes(searchBoxValue);
 
 const searchBox = document.getElementById("search-box");
 searchBox.addEventListener("input", () => {
@@ -89,10 +82,6 @@ searchBox.addEventListener("input", () => {
     });
   });
 });
-
-
-
-
 
 // start of generating html for  dishes Section dynamically
 
@@ -184,15 +173,9 @@ todaySpecialList.forEach((dish) => {
 const boxes = document.querySelector(".boxes");
 boxes.innerHTML = html2;
 
-// Function to get cookie value by name
-function getCookie(name) {
-  const value = "; " + document.cookie;
-  const parts = value.split("; " + name + "=");
-  if (parts.length === 2) return parts.pop().split(";").shift();
-}
-// ... Your existing code ...
 
 let btnAddToCart = document.querySelectorAll(".add-to-cart-btn");
+
 
 btnAddToCart.forEach((button) => {
   button.addEventListener("click", () => {
@@ -206,16 +189,26 @@ btnAddToCart.forEach((button) => {
       image: dishImage,
     };
 
-    const token = localStorage.getItem('jwtToken'); // Retrieve token from local storage
+    // Extract the JWT token from document.cookie
+    const cookies = document.cookie.split(';');
+    let jwtToken = '';
 
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.startsWith('jwtToken=')) {
+        jwtToken = cookie.substring('jwtToken='.length);
+        break;
+      }
+    }
 
+    // Now you can use jwtToken in the Authorization header
     fetch("http://localhost:5500/saveUserCartData", {
       method: "post",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + token // Include the JWT token from the input field
+        "Authorization": `Bearer ${jwtToken}`, // Use Authorization header for JWT
       },
-      body: JSON.stringify({ cartItems }), // Use shorthand for object property
+      body: JSON.stringify({ cartItems }),
     })
       .then((res) => {
         return res.text();

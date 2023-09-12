@@ -56,13 +56,22 @@
 
 
   <script>
-   
-    function f1() {
-      const token = localStorage.getItem('jwtToken'); // Retrieve token from local storage
 
-      if (!token) {
-        // Handle the case where the token is not found in local storage
-        console.error('JWT token not found in local storage');
+    function f1() {
+      // Extract the JWT token from document.cookie
+      const cookies = document.cookie.split(';');
+      let jwtToken = '';
+
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith('jwtToken=')) {
+          jwtToken = cookie.substring('jwtToken='.length);
+          break;
+        }
+      }
+      if (!jwtToken) {
+        // Handle the case where the jwtToken is not found in local storage
+        console.error('JWT jwtToken not found in cookies');
         return;
       }
 
@@ -70,7 +79,7 @@
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + token // Include the JWT token in the Authorization header
+          "Authorization": "Bearer " + jwtToken // Include the JWT token in the Authorization header
         }
       })
         .then((response) => response.json())
@@ -84,9 +93,17 @@
     }
 
     function deleteItem(removeDish) {
-      // Retrieve the JWT token from local storage
-      const jwtToken = localStorage.getItem('jwtToken');
+      // Extract the JWT token from document.cookie
+      const cookies = document.cookie.split(';');
+      let jwtToken = '';
 
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith('jwtToken=')) {
+          jwtToken = cookie.substring('jwtToken='.length);
+          break;
+        }
+      }
       // Check if the JWT token exists
       if (!jwtToken) {
         console.error('JWT token missing');
@@ -160,8 +177,17 @@
       grandTotal.innerHTML = (totAmtToPay / 11 + totAmtToPay).toFixed(2) + "Rs";
     }
     function updateQuantity(dishName, quantityChange) {
-      const jwtToken = localStorage.getItem('jwtToken'); // Retrieve the JWT token from local storage
+      // Extract the JWT token from document.cookie
+      const cookies = document.cookie.split(';');
+      let jwtToken = '';
 
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith('jwtToken=')) {
+          jwtToken = cookie.substring('jwtToken='.length);
+          break;
+        }
+      }
       fetch("http://localhost:5500/updateQuantity", {
         method: "PUT",
         headers: {

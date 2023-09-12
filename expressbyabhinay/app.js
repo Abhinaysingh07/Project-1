@@ -9,12 +9,13 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // Import the JWT library
 app.use(cookieParser()); // Use the cookie-parser middleware
 app.use(express.urlencoded({ extended: true }));// Middleware to parse incoming request bodies
-
-// Parse application/json
+app.use(cookieParser());
 
 app.use(express.json());
 
 
+
+app.use(cors()); // Use the corsOptions when setting up CORS
 
 // MySQL
 
@@ -81,29 +82,35 @@ app.post('/login', (req, res) => {
         // If the password is correct, generate a JWT token
         const token = jwt.sign({ userId: user.id }, 'your-secret-key', { expiresIn: '1h' });
 
-        // Send the token back to the client
-        return res.json({ message: 'Login successful', token });
+        // Send the JWT token to the frontend in the response
+        return res.json({ token, message: 'Login successful' });
     });
 });
 
 
-
-// Middleware to verify JWT token
-
+// Middleware to verify JWT token from Authorization header
 function verifyToken(req, res, next) {
-    const token = req.headers.authorization; // Retrieve token from Authorization header
+  // Extract the token from the Authorization header
+  const authHeader = req.headers.authorization;
 
-    if (!token) {
-        return res.status(403).json({ message: 'Token missing' });
+  if (!authHeader) {
+    return res.status(403).json({ message: 'Token missing' });
+  }
+
+  const token = authHeader.split(' ')[1]; // Extract the token part after "Bearer"
+
+  if (!token) {
+    return res.status(403).json({ message: 'Token missing' });
+  }
+
+  jwt.verify(token, 'your-secret-key', (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: 'Invalid token' });
     }
-
-    jwt.verify(token.replace('Bearer ', ''), 'your-secret-key', (err, decoded) => {
-        if (err) {
-            return res.status(401).json({ message: 'Invalid token' });
-        }
-        req.user = decoded; // Store the decoded user information in the request object
-        next();
-    });
+    // Store the decoded user information in the request object
+    req.user = decoded;
+    next(); // Continue processing the request
+  });
 }
 
 
@@ -156,8 +163,6 @@ app.post('/saveUserCartData', verifyToken, (req, res) => {
     });
 });
 
-
-// Example route that requires authentication and authorization
 
 app.get('/getCartData', verifyToken, (req, res) => {
     const userId = req.user.userId; // Extracted from the token verification middleware
