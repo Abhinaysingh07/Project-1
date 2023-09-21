@@ -1,1 +1,1 @@
-jwt token stored in local storage and local storage is being used to send jwt token to each network request like saveToCartData , updateCart , getCartdata ,  delete.
+jwt token stored in cookie from frontend means it cant be set httpOnly(can be accessed from frontend js) jwt token is being sent in each request using authorization in headers of requst I tried so much but was unable to store cookie from server side it was not saving in application tab so finally i used frotned to save cookie and cookie is not going even to server i have to send jwt token direct
