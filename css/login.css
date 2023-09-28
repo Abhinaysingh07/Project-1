@@ -1,4 +1,3 @@
-
 .head {
   display: flex;
   justify-content: space-between;
@@ -98,7 +97,6 @@
   text-decoration: underline;
 }
 
-
 .login_form input,
 .login_form button,
 .signup_form input,
@@ -116,4 +114,89 @@
   font-size: 1.3rem;
   line-height: 1.6rem;
   color: rgb(116, 110, 110);
+}
+
+.confirmation-message {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #32cd32; /* Green background color, change as needed */
+  color: #fff; /* Text color, change as needed */
+  padding: 20px 30px; /* Increased padding for a bigger box */
+  border-radius: 10px; /* Increased border radius for a smoother look */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* Increased box shadow */
+  z-index: 999; /* Ensure it's above other elements */
+  font-size: 16px; /* Increased font size for the text */
+}
+/* Initially hide the user icon */
+.fa-user {
+  display: none;
+}
+/* Style for the user sidebar */
+#user-sidebar {
+  text-align: left;
+  display: block;
+  position: fixed;
+  top: -30rem; /* Initially off-screen */
+  right: 1rem;
+  width: 35rem;
+  background-color: #333;
+  padding: 2rem; /* Reduced padding for a cleaner look */
+  transition: top 0.3s ease; /* Adjusted transition property */
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Added a subtle box shadow */
+  z-index: 999; /* Ensure it's on top of other content */
+}
+
+/* Style for text inside the user sidebar */
+#user-sidebar h2 {
+  font-size: 2.2rem; /* Slightly adjusted font size */
+  text-align: center;
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* Style for the user details */
+.user-details {
+  margin-top: 1rem; /* Adjusted margin for spacing */
+}
+
+/* Style for the username and userphone spans */
+#username,
+#userphone {
+  font-size: 1.7rem; /* Adjusted font size for user details */
+  color: #fff;
+  display: inline-block; /* Display spans in a block to allow line breaks */
+  margin-right: 1rem; /* Add a little spacing between the elements */
+  margin-bottom: 0.5rem; /* Adjusted margin for vertical spacing */
+  
+}
+
+
+/* Style for the Logout button */
+#logout-button {
+  font-size: 1.8rem;
+  color: #fff;
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 4px;
+  width: 100%;
+  margin-top: 1rem; /* Adjusted margin */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 1rem;
+  outline: none; /* Remove button outline on click */
+}
+
+/* Style for the button on hover */
+#logout-button:hover {
+  background-color: #32cd32; /* Change background color on hover */
+  color: #fff; /* Adjusted color on hover */
+}
+
+/* Style the user icon to make it look clickable */
+#user-icon {
+  cursor: pointer;
 }

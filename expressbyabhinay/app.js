@@ -61,56 +61,58 @@ app.post('/login', (req, res) => {
     const { phone, password } = req.body;
 
     // Retrieve user information based on the provided phone number
-
     pool.query('SELECT * FROM userss WHERE phone = ?', [phone], (err, results) => {
         if (err) {
             console.error(err);
-            return res.status(500).json({ message: 'Server error' });
+            return res.json({ message: 'Server error' });
         }
 
         if (results.length === 0) {
-            return res.status(401).json({ message: 'This Number is not registered' });
+            return res.json({ message: 'This Number is not registered' });
         }
 
-        const user = results[0];
-        const isPasswordValid = bcrypt.compareSync(password, user.password);
+        const user = results[0];//saving user details 
 
+        //checking if passworrd is correct
+        const isPasswordValid = bcrypt.compareSync(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Password incorrect' });
+            return res.json({ message: 'Password incorrect' });
         }
 
         // If the password is correct, generate a JWT token
-        const token = jwt.sign({ userId: user.id }, 'your-secret-key', { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user.id }, 'your-secret-key', { expiresIn: '24h' });
+        pool.query('select * from cart where user_id = ?', [user.id], (err, allrows) => {
+            // Send the JWT token to the frontend in the response
+            return res.json({ token, message: 'Login successful', quant: allrows.length ,username:user.username,phone:user.phone });
+        })
 
-        // Send the JWT token to the frontend in the response
-        return res.json({ token, message: 'Login successful' });
     });
 });
 
 
 // Middleware to verify JWT token from Authorization header
 function verifyToken(req, res, next) {
-  // Extract the token from the Authorization header
-  const authHeader = req.headers.authorization;
+    // Extract the token from the Authorization header
+    const authHeader = req.headers.authorization;
 
-  if (!authHeader) {
-    return res.status(403).json({ message: 'Token missing' });
-  }
-
-  const token = authHeader.split(' ')[1]; // Extract the token part after "Bearer"
-
-  if (!token) {
-    return res.status(403).json({ message: 'Token missing' });
-  }
-
-  jwt.verify(token, 'your-secret-key', (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ message: 'Invalid token' });
+    if (!authHeader) {
+        return res.status(403).json({ message: 'Token missing' });
     }
-    // Store the decoded user information in the request object
-    req.user = decoded;
-    next(); // Continue processing the request
-  });
+
+    const token = authHeader.split(' ')[1]; // Extract the token part after "Bearer"
+
+    if (!token) {
+        return res.status(403).json({ message: 'Token missing' });
+    }
+
+    jwt.verify(token, 'your-secret-key', (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+        // Store the decoded user information in the request object
+        req.user = decoded;
+        next(); // Continue processing the request
+    });
 }
 
 
@@ -140,23 +142,27 @@ app.post('/saveUserCartData', verifyToken, (req, res) => {
                 const currentQuantity = rows[0].quantity;
                 const updatedQuantity = currentQuantity + cartItems.quantity;
 
-                connection.query('UPDATE cart SET quantity = ? WHERE dishName = ? AND user_id = ?', [updatedQuantity, cartItems.dishName, userId], (err) => {
-                    connection.release();
+                pool.query('UPDATE cart SET quantity = ? WHERE dishName = ? AND user_id = ?', [updatedQuantity, cartItems.dishName, userId], (err) => {
                     if (err) {
                         console.error('Update query error:', err);
                         return res.status(500).json({ error: 'Update error' });
                     }
-                    return res.json({ message: 'Quantity updated successfully' });
+                    pool.query('select * from cart where user_id = ?', [userId], (err, allrows) => {
+                        return res.json({ message: 'Quantity updated successfully', quant: allrows.length });
+                    })
+
                 });
             } else {
                 // If the dishName does not exist for the user, insert a new row in the cart table with the provided data
-                connection.query('INSERT INTO cart (user_id, dishName, quantity, price, image) VALUES (?, ?, ?, ?, ?)', [userId, cartItems.dishName, cartItems.quantity, cartItems.price, cartItems.image], (err) => {
-                    connection.release();
+                pool.query('INSERT INTO cart (user_id, dishName, quantity, price, image) VALUES (?, ?, ?, ?, ?)', [userId, cartItems.dishName, cartItems.quantity, cartItems.price, cartItems.image], (err) => {
                     if (err) {
                         console.error('Insert query error:', err);
                         return res.status(500).json({ error: 'Insert error' });
                     }
-                    return res.json({ message: 'Data inserted successfully' });
+                    pool.query('select * from cart where user_id = ?', [userId], (err, allrows) => {
+                        return res.json({ message: 'Data inserted successfully', quant: allrows.length });
+                    })
+
                 });
             }
         });

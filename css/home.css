@@ -99,6 +99,10 @@ section {
   background-color: rgba(248, 248, 255, 0.438);
   border-radius: 50rem;
 }
+.header .icons .fa-shopping-cart{
+  background-color: #ff5733; /* Choose a background color */
+
+}
 
 .header .icons i:hover,
 .header .icons a:hover {
@@ -331,6 +335,8 @@ p {
   color: var(--green);
   margin: 0 2rem;
 }
+
+
 
 .dish_container .dish .stars i {
   color: #27ae60;
