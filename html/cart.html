@@ -74,7 +74,7 @@
       userData = JSON.parse(userDataJSON);
     }
     
-    function f1() {
+    function main() {
 
       const jwtToken = getCookie("jwtToken");
       if (!jwtToken) {
@@ -123,8 +123,8 @@
           // Get the updated cart list
           userData.quant -= 1;
           document.cookie = `userData=${JSON.stringify(userData)}; expires=Sun, 31 Dec 2030 23:59:59 GMT; path=/`;
-          // Call f1() after successful deletion
-          f1();
+          // Call main() after successful deletion
+          main();
         })
         .catch((error) => {
           console.error('Error deleting cart item:', error);
@@ -208,14 +208,14 @@
           return response.json();
         })
         .then((data) => {
-          f1();
+          main();
         })
         .catch((error) => {
           console.error('Error updating quantity:', error);
         });
     }
 
-    f1();
+    main();
 
     // Add this code at the end of your JavaScript
     document.addEventListener("DOMContentLoaded", function () {

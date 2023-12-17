@@ -28,6 +28,7 @@ const pool = mysql.createPool({
 })
 
 app.post('/signup', (req, res) => {
+    
     const { s_username, pno, password } = req.body;
 
     // Check if the phone number is already registered

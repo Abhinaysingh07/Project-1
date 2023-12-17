@@ -1,0 +1,12 @@
+-> verifcation add in login and signup pages
+
+---------------this should be--------------
+
+-> after succesfull order take the list of items in cart and put them in a table order in database and remove from cart 
+-> add a cancel order button on click of place order  and add a notice box displaying that our staff will call you for location info of order and remove all (remove buttons)
+-> on cancel order all  order must removed from the data base
+
+------------but doing this----------------------
+-> converts dishlist in json format data and using imports use them
+-> on confirm order add all items in cart to order table in datbase and add a cancelation button on which click  his order get cancelled
+-> make full website responsive

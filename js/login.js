@@ -1,10 +1,10 @@
 // login and signup rendering script
-const cl = document.querySelectorAll(".signupContainer .close,.loginConatiner .close");
+const closeBtns = document.querySelectorAll(".signupContainer .close,.loginConatiner .close");
 const signupLink = document.getElementsByClassName("signup-link")[1];
 const loginLink = document.getElementsByClassName("signup-link")[3];
-const loginBtns = document.querySelectorAll(".lbtn");
-const loginSubmitBtn = document.getElementsByClassName("login-btn")[0];
-cl.forEach((button) => {
+const loginBtns = document.querySelectorAll(".login-button");
+const loginSubmitBtn = document.getElementsByClassName("login-submit-button")[0];
+closeBtns.forEach((button) => {
     button.addEventListener("click", () => {
         signupContainer.style.display = "none";//dont know why but signupContainer and loginContainer running without declaring
         loginConatiner.style.display = "none";
@@ -44,7 +44,7 @@ function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
-  }
+}
 
 // Get the userData cookie
 const userDataJSON = getCookie("userData");
@@ -52,7 +52,7 @@ let userData;
 if (userDataJSON) {
     userData = JSON.parse(userDataJSON);
 }
-a
+
 // Check if the user is already logged in when the page loads
 window.addEventListener("load", () => {
 
@@ -65,8 +65,8 @@ window.addEventListener("load", () => {
             document.getElementById('userphone').innerText = userData.phone;
             document.querySelector(".fa-shopping-cart").innerHTML = userData.quant;
 
-            // Hide all elements with the class 'lbtn'
-            const loginButtons = document.getElementsByClassName('lbtn');
+            // Hide all elements with the class 'login-button'
+            const loginButtons = document.getElementsByClassName('login-button');
             for (let i = 0; i < loginButtons.length; i++) {
                 loginButtons[i].style.display = "none";
             }
@@ -121,7 +121,7 @@ loginSubmitBtn.addEventListener("click", () => {
 
                 const userDataJSON = JSON.stringify(userData); // Convert the object to a JSON string
                 document.cookie = `userData=${userDataJSON}; expires=Sun, 31 Dec 2023 23:59:59 GMT; path=/`;  // Save the JSON string in a single cookie
-              
+
                 location.reload(); //refresh the page 
 
             }
