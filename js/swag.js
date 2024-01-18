@@ -98,9 +98,10 @@ srch.addEventListener("click", () => {
   document.documentElement.style.overflow = "hidden"; // Disable scrolling on html element
 });
 close.addEventListener("click", () => {
+  searchBox.value = "";
   searchResult.innerHTML = "";
-  search_form.classList.toggle("search_toggle");
   document.documentElement.style.overflow = "auto"; // Disable scrolling on html element
+  search_form.classList.toggle("search_toggle");
 });
 
 //searching an item 
@@ -148,6 +149,7 @@ searchBox.addEventListener("input", () => {
   let a = document.querySelectorAll(".dishess");
   a.forEach((dish) => {
     dish.addEventListener("click", () => {
+      searchBox.value = "";
       searchResult.innerHTML = "";
       document.documentElement.style.overflow = "auto"; // Disable scrolling on html element
       search_form.classList.toggle("search_toggle");

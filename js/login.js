@@ -60,7 +60,7 @@ window.addEventListener("load", () => {
     if (userData) {
         if (userData.isLoggedIn === true) {
             document.querySelector('.fa-user').style.display = "inline";
-            // Update the username , phone and cart 
+            // Update the username , phone and cart
             document.getElementById('username').innerText = userData.username;
             document.getElementById('userphone').innerText = userData.phone;
             document.querySelector(".fa-shopping-cart").innerHTML = userData.quant;
