@@ -2,22 +2,14 @@ const express = require('express');
 const mysql = require('mysql');
 const cookieParser = require('cookie-parser'); // Import the cookie-parser package
 const app = express();
-const port = 5500;
 const cors = require('cors'); // Import the cors package
-app.use(cors());
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // Import the JWT library
 app.use(cookieParser()); // Use the cookie-parser middleware
 app.use(express.urlencoded({ extended: true }));// Middleware to parse incoming request bodies
-app.use(cookieParser());
-
 app.use(express.json());
-
-
-
-app.use(cors()); // Use the corsOptions when setting up CORS
-
-// MySQL
+app.use(cors());
+const port = 5500;
 
 const pool = mysql.createPool({
     connectionLimit: 10,
@@ -28,7 +20,7 @@ const pool = mysql.createPool({
 })
 
 app.post('/signup', (req, res) => {
-    
+
     const { s_username, pno, password } = req.body;
 
     // Check if the phone number is already registered
@@ -84,12 +76,11 @@ app.post('/login', (req, res) => {
         const token = jwt.sign({ userId: user.id }, 'your-secret-key', { expiresIn: '24h' });
         pool.query('select * from cart where user_id = ?', [user.id], (err, allrows) => {
             // Send the JWT token to the frontend in the response
-            return res.json({ token, message: 'Login successful', quant: allrows.length ,username:user.username,phone:user.phone });
+            return res.json({ token, message: 'Login successful', quant: allrows.length, username: user.username, phone: user.phone });
         })
 
     });
 });
-
 
 // Middleware to verify JWT token from Authorization header
 function verifyToken(req, res, next) {
@@ -116,60 +107,53 @@ function verifyToken(req, res, next) {
     });
 }
 
-
 app.post('/saveUserCartData', verifyToken, (req, res) => {
     const userId = req.user.userId;
     const { cartItems } = req.body;
 
     // Add the user's ID to the cartItems object
-    cartItems.user_id = userId; // Use 'user_id' column name from the database table
+    cartItems.user_id = userId;
 
-    pool.getConnection((err, connection) => {
+    // Check if the dishName already exists in the cart for the user
+    pool.query('SELECT * FROM cart WHERE dishName = ? AND user_id = ?', [cartItems.dishName, userId], (err, rows) => {
         if (err) {
-            console.error('Database connection error:', err);
-            throw err;
+            console.error('Select query error:', err);
+            return res.status(500).json({ error: 'Database error' });
         }
 
-        // Check if the dishName already exists in the cart for the user
-        connection.query('SELECT * FROM cart WHERE dishName = ? AND user_id = ?', [cartItems.dishName, userId], (err, rows) => {
-            if (err) {
-                connection.release();
-                console.error('Select query error:', err);
-                return res.status(500).json({ error: 'Database error' });
-            }
+        if (rows.length > 0) {
+            // If the dishName exists for the user, update the quantity
+            const currentQuantity = rows[0].quantity;
+            const updatedQuantity = currentQuantity + cartItems.quantity;
 
-            if (rows.length > 0) {
-                // If the dishName exists for the user, update the quantity
-                const currentQuantity = rows[0].quantity;
-                const updatedQuantity = currentQuantity + cartItems.quantity;
+            // Update query
+            pool.query('UPDATE cart SET quantity = ? WHERE dishName = ? AND user_id = ?', [updatedQuantity, cartItems.dishName, userId], (err) => {
+                if (err) {
+                    console.error('Update query error:', err);
+                    return res.status(500).json({ error: 'Update error' });
+                }
 
-                pool.query('UPDATE cart SET quantity = ? WHERE dishName = ? AND user_id = ?', [updatedQuantity, cartItems.dishName, userId], (err) => {
-                    if (err) {
-                        console.error('Update query error:', err);
-                        return res.status(500).json({ error: 'Update error' });
-                    }
-                    pool.query('select * from cart where user_id = ?', [userId], (err, allrows) => {
-                        return res.json({ message: 'Quantity updated successfully', quant: allrows.length });
-                    })
-
+                // Select query to retrieve updated data
+                pool.query('SELECT * FROM cart WHERE user_id = ?', [userId], (err, allrows) => {
+                    return res.json({ message: 'Quantity updated successfully', quant: allrows.length });
                 });
-            } else {
-                // If the dishName does not exist for the user, insert a new row in the cart table with the provided data
-                pool.query('INSERT INTO cart (user_id, dishName, quantity, price, image) VALUES (?, ?, ?, ?, ?)', [userId, cartItems.dishName, cartItems.quantity, cartItems.price, cartItems.image], (err) => {
-                    if (err) {
-                        console.error('Insert query error:', err);
-                        return res.status(500).json({ error: 'Insert error' });
-                    }
-                    pool.query('select * from cart where user_id = ?', [userId], (err, allrows) => {
-                        return res.json({ message: 'Data inserted successfully', quant: allrows.length });
-                    })
+            });
+        } else {
+            // If the dishName does not exist for the user, insert a new row in the cart table with the provided data
+            pool.query('INSERT INTO cart (user_id, dishName, quantity, price, image) VALUES (?, ?, ?, ?, ?)', [userId, cartItems.dishName, cartItems.quantity, cartItems.price, cartItems.image], (err) => {
+                if (err) {
+                    console.error('Insert query error:', err);
+                    return res.status(500).json({ error: 'Insert error' });
+                }
 
+                // Select query to retrieve updated data
+                pool.query('SELECT * FROM cart WHERE user_id = ?', [userId], (err, allrows) => {
+                    return res.json({ message: 'Data inserted successfully', quant: allrows.length });
                 });
-            }
-        });
+            });
+        }
     });
 });
-
 
 app.get('/getCartData', verifyToken, (req, res) => {
     const userId = req.user.userId; // Extracted from the token verification middleware
@@ -184,29 +168,23 @@ app.get('/getCartData', verifyToken, (req, res) => {
     });
 });
 
-
-// Delete a beer
-
 app.delete('/deleteCartData', verifyToken, (req, res) => {
     const removeItem = req.body.removeDish;
-
-    // Extract the user ID from the decoded JWT token
     const userId = req.user.userId;
-
-    pool.getConnection((err, connection) => {
-        if (err) throw err;
-        connection.query('DELETE FROM cart WHERE dishName = ? AND user_id = ?', [removeItem, userId], (err, result) => {
-            connection.release(); // return the connection to the pool
-            if (err) {
-                console.log(err);
-                res.status(500).json({ success: false, message: 'Error deleting cart item.' });
-            } else {
-                res.status(200).json({ success: true, message: 'Cart item deleted successfully.' });
-            }
-        });
+    // DELETE query to remove the item from the cart
+    pool.query('DELETE FROM cart WHERE dishName = ? AND user_id = ?', [removeItem, userId], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ success: false, message: 'Error deleting cart item.' });
+        }
+        // Check if any rows were affected (item was found and deleted)
+        if (result.affectedRows > 0) {
+            return res.status(200).json({ success: true, message: 'Cart item deleted successfully.' });
+        } else {
+            return res.status(404).json({ success: false, message: 'Cart item not found.' });
+        }
     });
 });
-
 
 app.put("/updateQuantity", verifyToken, (req, res) => {
     const { dishName, quantityChange } = req.body;
@@ -232,8 +210,6 @@ app.put("/updateQuantity", verifyToken, (req, res) => {
         });
     });
 });
-
-
 
 // Listen on enviroment port or 3000
 
